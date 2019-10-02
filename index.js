@@ -39,3 +39,83 @@ circle1.draw();
 
 Circle.call({}, 1);
 Circle.apply({}, [1, 2]);
+
+// ///////////////////////////////////////////////////
+// object properties
+// ///////////////////////////////////////////////////
+for (let key in circle) {
+    if(typeof key !== 'function'){
+        console.log(key, circle[key])
+    }
+}
+
+const keys = Object.keys(circle);
+console.log(keys);
+
+if('radius' in circle){
+    console.log('Circle has a radius.');
+}
+
+// ///////////////////////////////////////////////////
+// abstraction - hide the details, show the essentials
+// ///////////////////////////////////////////////////
+function Circle(radius) {
+    // all properties are public
+    this.defaultLocation = { x: 0, y: 0};
+    this.computeLocation = function () {
+
+    };
+    this.radius = radius;
+    this.draw = function () {
+        console.log('draw');
+    };
+}
+
+// now hiding the details
+function Circle(radius) {
+    // private property
+    let defaultLocation = { x: 0, y: 0};
+
+    // private function
+    function computeLocation() {
+    }
+
+    this.radius = radius;
+    this.draw = function () {
+        console.log('draw');
+    };
+}
+
+// ///////////////////////////////////////////////////
+// getters and setters
+// ///////////////////////////////////////////////////
+function Circle(radius) {
+    let defaultLocation = { x: 0, y: 0};
+    this.radius = radius;
+    this.draw = function () {
+        console.log('draw');
+    };
+
+    this.getDefaultLocation = function () {
+        return defaultLocation;
+    };
+
+    Object.defineProperty(this, 'defaultLocation', {
+        get: function () {
+            return defaultLocation;
+        },
+        set: function (value) {
+            // add validation
+            if(!value.x || !value.y) {
+                throw new Error('Invalid location');
+            }
+
+            defaultLocation = value;
+        }
+    });
+}
+const newCircle = new Circle(20);
+console.log(newCircle.getDefaultLocation());
+console.log(newCircle.defaultLocation);
+// will throw exception
+newCircle.defaultLocation = 1;
